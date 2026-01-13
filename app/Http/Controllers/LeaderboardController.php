@@ -13,33 +13,52 @@ class LeaderboardController extends Controller
         $filePath = storage_path('app/data_absensi.xlsx');
 
         if (!file_exists($filePath)) {
-            return "File Excel tidak ditemukan. Pastikan file dari Spreadsheet sudah di-copy ke storage/app/data_absensi.xlsx";
+            return "File Excel tidak ditemukan di storage/app/data_absensi.xlsx";
         }
 
         $spreadsheet = IOFactory::load($filePath);
-        $sheet = $spreadsheet->getActiveSheet();
-        $data = $sheet->toArray();
 
+        $employeeSheet = $spreadsheet->getSheetByName('Nama Pegawai');
+        $allEmployeesRaw = $employeeSheet->toArray();
         $karyawanScores = [];
 
-        // Mulai dari baris ke-2 (index 1) untuk melewati header
-        foreach (array_slice($data, 1) as $row) {
-            $nama = $row[1] ?? null; // Kolom Nama
-            $poin = isset($row[2]) ? (int)$row[2] : 0; // Kolom Poin langsung
-
-            if ($nama) {
-                $karyawanScores[$nama] = ($karyawanScores[$nama] ?? 0) + $poin;
+        foreach (array_slice($allEmployeesRaw, 1) as $row) {
+            $namaMaster = $row[0] ?? null; 
+            if ($namaMaster) {
+                $karyawanScores[trim($namaMaster)] = 0;
             }
         }
+        $pointsSheet = $spreadsheet->getSheetByName('Sheet1');
+        $attendanceData = $pointsSheet->toArray();
 
-        arsort($karyawanScores);
+        foreach (array_slice($attendanceData, 1) as $row) {
+            $namaHadir = $row[1] ?? null; 
+            $poin = isset($row[2]) ? (int)$row[2] : 0;
 
+            if ($namaHadir) {
+                $namaHadir = trim($namaHadir);
+                if (isset($karyawanScores[$namaHadir])) {
+                    $karyawanScores[$namaHadir] += $poin;
+                } else {
+                    $karyawanScores[$namaHadir] = $poin;
+                }
+            }
+        }
+        array_multisort(array_values($karyawanScores), SORT_DESC, array_keys($karyawanScores), SORT_ASC, $karyawanScores);
         $rankedData = [];
         foreach ($karyawanScores as $name => $score) {
+            $imagePath = 'images/' . $name . '.jpg';
+
+            if (file_exists(public_path($imagePath))) {
+                $photo = asset($imagePath);
+            } else {
+                $photo = "https://ui-avatars.com/api/?name=" . urlencode($name) . "&background=random&color=fff";
+            }
+
             $rankedData[] = [
                 'name' => $name,
                 'score' => $score,
-                'image' => "https://ui-avatars.com/api/?name=" . urlencode($name) . "&background=random&color=fff"
+                'image' => $photo
             ];
         }
 
@@ -48,48 +67,4 @@ class LeaderboardController extends Controller
 
         return view('leaderboard', compact('top5', 'others'));
     }
-
-// public function index()
-    // {
-    //     $filePath = storage_path('app/data_absensi.xlsx');
-    //     $spreadsheet = IOFactory::load($filePath);
-    //     $sheet = $spreadsheet->getActiveSheet();
-    //     $data = $sheet->toArray();
-
-    //     $pointsTable = [1 => 5, 2 => 4, 3 => 3, 4 => 2, 5 => 1];
-    //     $karyawanScores = [];
-
-    //     foreach (array_slice($data, 1) as $row) {
-    //         $nama = $row[1]; // Kolom Nama
-    //         $posisi = (int)$row[2]; // Kolom Posisi
-
-    //         if (isset($pointsTable[$posisi])) {
-    //             $karyawanScores[$nama] = ($karyawanScores[$nama] ?? 0) + $pointsTable[$posisi];
-    //         }
-    //     }
-
-    //     arsort($karyawanScores);
-
-    //     $rankedData = [];
-    //     foreach ($karyawanScores as $name => $score) {
-    //         $imagePath = 'images/' . $name . '.jpg';
-
-    //         if (file_exists(public_path($imagePath))) {
-    //             $photo = asset($imagePath);
-    //         } else {
-    //             $photo = "https://ui-avatars.com/api/?name=" . urlencode($name) . "&background=random&color=fff";
-    //         }
-
-    //         $rankedData[] = [
-    //             'name' => $name,
-    //             'score' => $score,
-    //             'image' => $photo
-    //         ];
-    //     }
-
-    //     $top5 = array_slice($rankedData, 0, 5);
-    //     $others = array_slice($rankedData, 5);
-
-    //     return view('leaderboard', compact('top5', 'others'));
-    // }
 }
