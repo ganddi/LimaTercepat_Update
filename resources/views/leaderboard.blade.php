@@ -22,9 +22,17 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .text-primary { color: var(--primary-color); }
-        .bg-primary { background-color: var(--primary-color); }
-        .border-primary { border-color: var(--primary-color); }
+        .text-primary {
+            color: var(--primary-color);
+        }
+
+        .bg-primary {
+            background-color: var(--primary-color);
+        }
+
+        .border-primary {
+            border-color: var(--primary-color);
+        }
     </style>
 </head>
 
@@ -46,7 +54,8 @@
                     <div class="relative mb-4 transition-transform duration-300 group-hover:-translate-y-2">
                         <img src="{{ $top5[1]['image'] }}"
                             class="w-32 h-32 rounded-full border-4 border-primary shadow-2xl object-cover">
-                        <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-primary text-white font-black px-4 py-1 rounded-full text-sm">
+                        <div
+                            class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-primary text-white font-black px-4 py-1 rounded-full text-sm">
                             2
                         </div>
                     </div>
@@ -62,7 +71,8 @@
                     <div class="relative mb-4 transition-transform duration-300 group-hover:-translate-y-3">
                         <img src="{{ $top5[0]['image'] }}"
                             class="w-44 h-44 rounded-full border-4 border-yellow-500 shadow-[0_0_50px_rgba(234,179,8,0.2)] object-cover">
-                        <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-yellow-500 text-black font-black px-6 py-1.5 rounded-full text-lg">
+                        <div
+                            class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-yellow-500 text-black font-black px-6 py-1.5 rounded-full text-lg">
                             1
                         </div>
                     </div>
@@ -78,7 +88,8 @@
                     <div class="relative mb-4 transition-transform duration-300 group-hover:-translate-y-2">
                         <img src="{{ $top5[2]['image'] }}"
                             class="w-32 h-32 rounded-full border-4 border-emerald-500 shadow-2xl object-cover">
-                        <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-white font-black px-4 py-1 rounded-full text-sm">
+                        <div
+                            class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-white font-black px-4 py-1 rounded-full text-sm">
                             3
                         </div>
                     </div>
@@ -92,11 +103,14 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-20">
             @foreach (array_slice($top5, 3, 2) as $index => $item)
-                <div class="glass-card rounded-2xl p-6 flex items-center justify-between transition-all hover:border-primary/50">
+                <div
+                    class="glass-card rounded-2xl p-6 flex items-center justify-between transition-all hover:border-primary/50">
                     <div class="flex items-center gap-6">
                         <div class="relative">
-                            <img src="{{ $item['image'] }}" class="w-20 h-20 rounded-full border-2 border-slate-700 object-cover">
-                            <div class="absolute -top-2 -left-2 bg-slate-800 text-white w-8 h-8 flex items-center justify-center rounded-full font-bold border border-slate-600">
+                            <img src="{{ $item['image'] }}"
+                                class="w-20 h-20 rounded-full border-2 border-slate-700 object-cover">
+                            <div
+                                class="absolute -top-2 -left-2 bg-slate-800 text-white w-8 h-8 flex items-center justify-center rounded-full font-bold border border-slate-600">
                                 {{ $index + 4 }}
                             </div>
                         </div>
@@ -130,7 +144,7 @@
                                     <span class="font-bold">{{ $item['name'] }}</span>
                                 </td>
                                 <td class="px-8 py-4 text-right">
-                                        {{ $item['score'] }}
+                                    {{ $item['score'] }}
                                 </td>
                             </tr>
                         @endforeach
@@ -141,5 +155,13 @@
 
     </div>
 
+    <script>
+        // Refresh otomatis setiap 30 detik (30000 ms)
+        setInterval(function() {
+            window.location.reload();
+        }, 30000);
+    </script>
+
 </body>
+
 </html>
