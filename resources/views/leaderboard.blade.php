@@ -40,6 +40,11 @@
 
     <div class="max-w-6xl mx-auto px-6 py-10">
 
+        <div class="flex justify-end mb-4">
+            <a href="{{ route('logout') }}" class="bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors border border-red-500/50">
+                Logout
+            </a>
+        </div>
         <div class="text-center mb-16">
             <h1 class="text-4xl font-extrabold tracking-tight text-white mb-2">
                 <span class="text-white">Leaderboard</span>

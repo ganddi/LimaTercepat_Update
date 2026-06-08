@@ -10,7 +10,7 @@ class LeaderboardController extends Controller
 {
     public function index()
     {
-        $spreadsheetId = '1P5P_10CxCVBZqLHWvvJbtSCMibI1PziIZKw31nyvYvQ';
+        $spreadsheetId = '1gAlqKyPr1q9riCr422JK5h_0aPoLtqxGfc6V76AHSKE';
         $client = new Client();
         $client->setAuthConfig(storage_path('app/google-access.json'));
         $client->addScope('https://www.googleapis.com/auth/spreadsheets.readonly');
@@ -24,8 +24,8 @@ class LeaderboardController extends Controller
 
             $karyawanData = [];
             foreach ($allEmployeesRaw as $row) {
-                $nama = trim($row[0] ?? '');
-                if ($nama) {
+                $nama = trim(strip_tags($row[0] ?? ''));
+                if ($nama && preg_match('/^[\p{L}\s.\'-]+$/u', $nama)) {
                     $karyawanData[$nama] = 0; // Inisialisasi poin 0
                 }
             }
@@ -36,7 +36,7 @@ class LeaderboardController extends Controller
             $attendanceData = $resPoin->getValues() ?? [];
 
             foreach ($attendanceData as $row) {
-                $namaHadir = trim($row[0] ?? '');
+                $namaHadir = trim(strip_tags($row[0] ?? ''));
                 $poin = (int)($row[1] ?? 0);
                 if (isset($karyawanData[$namaHadir])) {
                     $karyawanData[$namaHadir] += $poin;
@@ -75,7 +75,8 @@ class LeaderboardController extends Controller
 
             return view('leaderboard', compact('top5', 'others'));
         } catch (\Exception $e) {
-            return "Error: " . $e->getMessage();
+            \Log::error('Gagal mengambil data Google Sheets: ' . $e->getMessage());
+            return view('errors.leaderboard_error')->with('message', 'Sistem sedang tidak dapat diakses. Silakan hubungi administrator.');
         }
     }
 }
