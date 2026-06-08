@@ -1,59 +1,83 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Lima Tercepat — Employee Leaderboard
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem aplikasi web berbasis Laravel 12 untuk menampilkan peringkat "Lima Tercepat" kehadiran karyawan. Data kinerja, nama, dan peringkat ditarik secara *real-time* dari Google Spreadsheet menggunakan Google Sheets API.
 
-## About Laravel
+## 🚀 Fitur Utama
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Integrasi Google Sheets API**: Menarik data langsung dari Google Spreadsheet menggunakan autentikasi *Service Account* tanpa memerlukan basis data lokal (database-less).
+- **Keamanan Akses (Authentication)**: Dilengkapi dengan sistem login berbasis sesi kustom menggunakan *middleware* `CheckAdminSession` untuk melindungi privasi data karyawan dari akses publik.
+- **Proteksi XSS Berbasis Input**: Sanitasi data input dan output berlapis menggunakan `strip_tags()` dan `preg_match()` untuk mencegah injeksi kode HTML/JavaScript berbahaya dari kolaborator Spreadsheet.
+- **Penanganan Galat Aman (*Secure Error Handling*)**: Menyembunyikan pesan galat teknis dari pengguna akhir untuk menghindari *Information Disclosure*. Seluruh log teknis dicatat secara internal.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 📋 Prasyarat Sistem
 
-## Learning Laravel
+- PHP >= 8.2
+- Composer 2.x
+- Web Server lokal (Laragon, XAMPP, atau Laravel Valet/Sail)
+- Kredensial **Google Cloud Service Account** (file `google-access.json`)
+- Google Spreadsheet yang telah dibagikan (*shared*) ke email *Service Account*.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## ⚙️ Panduan Instalasi
 
-## Laravel Sponsors
+1. **Klon repositori ini:**
+   ```bash
+   git clone https://github.com/ganddi/LimaTercepat_Update.git
+   cd LimaTercepat
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+2. **Instal dependensi PHP:**
+   ```bash
+   composer install
+   ```
 
-### Premium Partners
+3. **Persiapkan berkas Environment:**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+4. **Konfigurasi Keamanan Tambahan di `.env`**:
+   Untuk lingkungan produksi, sangat disarankan mengubah setelan berikut:
+   ```ini
+   APP_ENV=production
+   APP_DEBUG=false
+   SESSION_DRIVER=file
+   ```
 
-## Contributing
+5. **Siapkan Kredensial Google Sheets API:**
+   - Dapatkan file JSON Service Account dari Google Cloud Platform.
+   - Ganti namanya menjadi `google-access.json`.
+   - Letakkan file tersebut di dalam folder `storage/app/`.
+   - Buka Google Spreadsheet sumber data Anda, klik "Share", dan tambahkan alamat email *Service Account* Anda sebagai "Viewer".
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## 🖥️ Menjalankan Aplikasi
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Jika Anda menggunakan lingkungan Laragon, aplikasi dapat diakses secara otomatis melalui URL lokal Anda, misalnya: `http://limatercepat.test`.
 
-## Security Vulnerabilities
+Atau menggunakan *built-in server* dari Laravel:
+```bash
+php artisan serve
+```
+Kemudian akses melalui *browser* di `http://localhost:8000`.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 🔐 Kredensial Default
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Karena sistem ini didesain untuk lingkungan internal dengan arsitektur tanpa *database* (*database-less*), kredensial login disimpan secara langsung pada *Controller*.
+
+- **Username**: `admin`
+- **Password**: `admin123`
+
+*(Anda dapat mengubah kombinasi ini di dalam berkas `app/Http/Controllers/AuthController.php`)*
+
+---
+
+## 🛡️ Laporan Keamanan (Tugas Akhir/Skripsi)
+Pengembangan fitur keamanan di repositori ini disertai dengan penyusunan **Dokumen Laporan Keamanan Sistem**. Laporan lengkap mencakup Bab I (Pendahuluan) hingga Bab V (Kesimpulan) yang mendokumentasikan analisis kerentanan dan langkah mitigasinya.
